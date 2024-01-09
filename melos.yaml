@@ -3,3 +3,8 @@ repository: https://github.com/sarbagyastha/youtube_player_flutter
 
 packages:
   - packages/**
+
+scripts:
+  melos:bootstrap:
+    description: Run `flutter pub get`
+    run: melos bootstrap
