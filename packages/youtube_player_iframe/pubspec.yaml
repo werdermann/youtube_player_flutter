@@ -16,7 +16,7 @@ dependencies:
   webview_flutter_android: ^3.13.2
   webview_flutter_wkwebview: ^3.10.1
   url_launcher: ^6.1.8
-  youtube_player_iframe_web: ^2.0.2
+  youtube_player_iframe_web: ^2.0.3
 
 dev_dependencies:
   flutter_test:
