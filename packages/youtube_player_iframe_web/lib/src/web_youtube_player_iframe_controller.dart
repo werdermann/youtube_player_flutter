@@ -9,6 +9,7 @@ import 'dart:html';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
+import 'package:youtube_player_iframe_web/src/youtube_html_element_view.dart';
 
 import 'platform_view_stub.dart' if (dart.library.html) 'dart:ui_web' as ui;
 
@@ -160,24 +161,15 @@ class YoutubePlayerIframeWeb extends PlatformWebViewWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HtmlElementView(
+    final channelParams = _controller._javaScriptChannelParams;
+
+    return YoutubeHtmlElementView(
       key: params.key,
       viewType: (params.controller as WebYoutubePlayerIframeController)
           ._params
           .ytiFrame
           .id,
-      onPlatformViewCreated: (_) {
-        final channelParams = _controller._javaScriptChannelParams;
-        window.onMessage.listen(
-          (event) {
-            if (channelParams.name == 'YoutubePlayer') {
-              channelParams.onMessageReceived(
-                JavaScriptMessage(message: event.data),
-              );
-            }
-          },
-        );
-      },
+      channelParams: channelParams,
     );
   }
 }
