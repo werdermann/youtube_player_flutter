@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:url_launcher/url_launcher.dart' as uri_launcher;
+import 'package:uuid/uuid.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
@@ -27,7 +28,7 @@ class YoutubePlayerController implements YoutubePlayerIFrameAPI {
   YoutubePlayerController({
     this.params = const YoutubePlayerParams(),
     ValueChanged<YoutubeWebResourceError>? onWebResourceError,
-  }) {
+  }) : uuid = const Uuid().v4() {
     _eventHandler = YoutubePlayerEventHandler(this);
 
     late final PlatformWebViewControllerCreationParams webViewParams;
@@ -70,6 +71,8 @@ class YoutubePlayerController implements YoutubePlayerIFrameAPI {
     } else if (webViewPlatform is WebKitWebViewController) {
       webViewPlatform.setAllowsBackForwardNavigationGestures(false);
     }
+
+    _init();
   }
 
   /// Creates a [YoutubePlayerController] and initializes the player with [videoId].
@@ -98,6 +101,9 @@ class YoutubePlayerController implements YoutubePlayerIFrameAPI {
 
     return controller;
   }
+
+  /// Unique player id.
+  final String uuid;
 
   final String _youtubeJSChannelName = 'YoutubePlayer';
 
@@ -247,8 +253,7 @@ class YoutubePlayerController implements YoutubePlayerIFrameAPI {
   }
 
   /// Loads the player with default [params].
-  @internal
-  Future<void> init() async {
+  Future<void> _init() async {
     await load(params: params, baseUrl: params.origin);
 
     if (!_initCompleter.isCompleted) _initCompleter.complete();
@@ -261,14 +266,15 @@ class YoutubePlayerController implements YoutubePlayerIFrameAPI {
     required YoutubePlayerParams params,
     String? baseUrl,
   }) async {
-    final playerHtml = await rootBundle.loadString(
+    final playerHtmlFile = await rootBundle.loadString(
       'packages/youtube_player_iframe/assets/player.html',
     );
 
     final platform = kIsWeb ? 'web' : defaultTargetPlatform.name.toLowerCase();
 
     await webViewController.loadHtmlString(
-      playerHtml
+      playerHtmlFile
+          .replaceAll('<<playerId>>', uuid)
           .replaceFirst('<<pointerEvents>>', params.pointerEvents.name)
           .replaceFirst('<<playerVars>>', params.toJson())
           .replaceFirst('<<platform>>', platform)
@@ -600,10 +606,6 @@ class YoutubePlayerController implements YoutubePlayerIFrameAPI {
   void setFullScreenListener(ValueChanged<bool> callback) {
     _onFullscreenChanged = callback;
   }
-
-  /// Called when full screen mode for the player changes.
-  @Deprecated('Use setFullScreenListener instead')
-  void Function(bool isFullscreen) onFullscreenChange = (_) {};
 
   /// Toggles fullscreen mode.
   ///

@@ -5,7 +5,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:youtube_player_iframe/src/widgets/fullscreen_youtube_player.dart';
 
@@ -16,7 +15,7 @@ import '../controller/youtube_player_controller.dart';
 /// See also:
 ///
 ///  * [FullscreenYoutubePlayer], which play or stream Youtube Videos in fullscreen mode.
-class YoutubePlayer extends StatefulWidget {
+class YoutubePlayer extends StatelessWidget {
   /// A widget to play or stream Youtube Videos.
   const YoutubePlayer({
     super.key,
@@ -25,7 +24,7 @@ class YoutubePlayer extends StatefulWidget {
     this.gestureRecognizers = const <Factory<OneSequenceGestureRecognizer>>{},
     this.backgroundColor,
     @Deprecated('Unused parameter. Use `YoutubePlayerParam.userAgent` instead.')
-        this.userAgent,
+    this.userAgent,
     this.enableFullScreenOnVerticalDrag = true,
   });
 
@@ -66,37 +65,13 @@ class YoutubePlayer extends StatefulWidget {
   final bool enableFullScreenOnVerticalDrag;
 
   @override
-  State<YoutubePlayer> createState() => _YoutubePlayerState();
-}
-
-class _YoutubePlayerState extends State<YoutubePlayer> {
-  late final YoutubePlayerController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = widget.controller;
-
-    _initPlayer();
-  }
-
-  @override
-  void didUpdateWidget(YoutubePlayer oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (widget.backgroundColor != oldWidget.backgroundColor) {
-      _updateBackgroundColor(widget.backgroundColor);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     Widget player = WebViewWidget(
-      controller: _controller.webViewController,
-      gestureRecognizers: widget.gestureRecognizers,
+      controller: controller.webViewController,
+      gestureRecognizers: gestureRecognizers,
     );
 
-    if (widget.enableFullScreenOnVerticalDrag) {
+    if (enableFullScreenOnVerticalDrag) {
       player = GestureDetector(
         onVerticalDragUpdate: _fullscreenGesture,
         child: player,
@@ -108,7 +83,7 @@ class _YoutubePlayerState extends State<YoutubePlayer> {
         return AspectRatio(
           aspectRatio: orientation == Orientation.landscape
               ? MediaQuery.of(context).size.aspectRatio
-              : widget.aspectRatio,
+              : aspectRatio,
           child: player,
         );
       },
@@ -120,21 +95,8 @@ class _YoutubePlayerState extends State<YoutubePlayer> {
 
     if (delta.abs() > 10) {
       delta.isNegative
-          ? _controller.enterFullScreen()
-          : _controller.exitFullScreen();
+          ? controller.enterFullScreen()
+          : controller.exitFullScreen();
     }
-  }
-
-  void _updateBackgroundColor(Color? backgroundColor) {
-    final bgColor = backgroundColor ?? Theme.of(context).colorScheme.background;
-    _controller.webViewController.setBackgroundColor(bgColor);
-  }
-
-  Future<void> _initPlayer() async {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      _updateBackgroundColor(widget.backgroundColor);
-    });
-
-    await _controller.init();
   }
 }

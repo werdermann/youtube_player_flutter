@@ -37,7 +37,7 @@
 
   <body>
     <div class="embed-container">
-      <div id="player"></div>
+      <div id="<<playerId>>"></div>
     </div>
 
     <script>
@@ -52,7 +52,7 @@
       var timerId;
 
       function onYouTubeIframeAPIReady() {
-        player = new YT.Player("player", {
+        player = new YT.Player("<<playerId>>", {
           host: host,
           playerVars: <<playerVars>>,
           events: {
@@ -101,6 +101,7 @@
 
             if(data.key) {
               var message = {}
+              message["playerId"] = "<<playerId>>";
               message[data.key] = result
               var messageString = JSON.stringify(message);
 
@@ -116,8 +117,12 @@
 
       function sendMessage(key, data) {
          var message = {}
+         message["playerId"] = "<<playerId>>";
          message[key] = data
          var messageString = JSON.stringify(message);
+
+         console.log("Message String:");
+         console.log(messageString);
 
          switch(platform) {
            case 'android':

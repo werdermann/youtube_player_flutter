@@ -34,7 +34,16 @@ class YoutubePlayerEventHandler {
   void call(JavaScriptMessage javaScriptMessage) {
     final data = Map.from(jsonDecode(javaScriptMessage.message));
 
+    final isYoutubePlayer = data.containsKey('playerId');
+    if (!isYoutubePlayer) return;
+
+    // Cancel if message was posted by another youtube player.
+    final playerId = data['playerId'] as String;
+    if (playerId != controller.uuid) return;
+
     for (final entry in data.entries) {
+      if (entry.key == 'playerId') continue;
+
       if (entry.key == 'ApiChange') {
         onApiChange(entry.value);
       } else {
@@ -43,16 +52,19 @@ class YoutubePlayerEventHandler {
     }
   }
 
-  /// This event fires whenever a player has finished loading and is ready to begin receiving API calls.
-  /// Your application should implement this function if you want to automatically execute certain operations,
-  /// such as playing the video or displaying information about the video, as soon as the player is ready.
+  /// This event fires whenever a player has finished loading and is ready to
+  /// begin receiving API calls. bYour application should implement this
+  /// function if you want to automatically execute certain operations, such as
+  /// playing the video or displaying information about the video, as soon as
+  /// the player is ready.
   void onReady(Object data) {
     if (!_readyCompleter.isCompleted) _readyCompleter.complete();
   }
 
   /// This event fires whenever the player's state changes.
-  /// The data property of the event object that the API passes to your event listener function
-  /// will specify an integer that corresponds to the new player state.
+  /// The data property of the event object that the API passes to your event
+  /// listener function will specify an integer that corresponds to the new
+  /// player state.
   Future<void> onStateChange(Object data) async {
     final stateCode = data as int;
 

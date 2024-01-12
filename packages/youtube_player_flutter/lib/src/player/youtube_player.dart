@@ -199,18 +199,18 @@ class _YoutubePlayerState extends State<YoutubePlayer> {
   @override
   void initState() {
     super.initState();
-    controller = widget.controller..addListener(listener);
+    controller = widget.controller..addListener(_onNotify);
     _aspectRatio = widget.aspectRatio;
   }
 
   @override
   void didUpdateWidget(YoutubePlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    oldWidget.controller.removeListener(listener);
-    widget.controller.addListener(listener);
+    oldWidget.controller.removeListener(_onNotify);
+    widget.controller.addListener(_onNotify);
   }
 
-  void listener() async {
+  void _onNotify() async {
     if (controller.value.isReady && _initialLoad) {
       _initialLoad = false;
       if (controller.flags.autoPlay) controller.play();
@@ -227,7 +227,7 @@ class _YoutubePlayerState extends State<YoutubePlayer> {
 
   @override
   void dispose() {
-    controller.removeListener(listener);
+    controller.removeListener(_onNotify);
     super.dispose();
   }
 

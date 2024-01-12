@@ -20,6 +20,7 @@ dependencies:
       url: https://github.com/werdermann/youtube_player_flutter.git
       ref: master
       path: packages/youtube_player_iframe_web
+  uuid: ^4.3.3
 
 dev_dependencies:
   flutter_test:

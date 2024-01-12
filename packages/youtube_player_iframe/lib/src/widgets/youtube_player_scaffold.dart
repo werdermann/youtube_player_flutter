@@ -36,7 +36,7 @@ class YoutubePlayerScaffold extends StatefulWidget {
     this.enableFullScreenOnVerticalDrag = true,
     this.backgroundColor,
     @Deprecated('Unused parameter. Use `YoutubePlayerParam.userAgent` instead.')
-        this.userAgent,
+    this.userAgent,
   });
 
   /// Builds the child widget.
@@ -105,7 +105,6 @@ class _YoutubePlayerScaffoldState extends State<YoutubePlayerScaffold> {
         aspectRatio: widget.aspectRatio,
         gestureRecognizers: widget.gestureRecognizers,
         enableFullScreenOnVerticalDrag: widget.enableFullScreenOnVerticalDrag,
-        backgroundColor: widget.backgroundColor,
       ),
     );
 

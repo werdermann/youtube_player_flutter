@@ -4,7 +4,13 @@ import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 
+/// {@template youtube_html_element_view}
+/// A stateful view that listen to the messages of the youtube api.
+///
+/// It disposes the stream whenever the view is disposed.
+/// {@endtemplate}
 class YoutubeHtmlElementView extends StatefulWidget {
+  /// {@macro youtube_html_element_view}
   const YoutubeHtmlElementView({
     required this.viewType,
     required this.channelParams,

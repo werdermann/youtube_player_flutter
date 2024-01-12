@@ -20,7 +20,6 @@ class FullscreenYoutubePlayer extends StatefulWidget {
     this.startSeconds,
     this.endSeconds,
     this.gestureRecognizers = const <Factory<OneSequenceGestureRecognizer>>{},
-    this.backgroundColor,
   });
 
   /// The YouTube Video ID.
@@ -44,11 +43,6 @@ class FullscreenYoutubePlayer extends StatefulWidget {
   ///
   /// This is ignored on web.
   final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers;
-
-  /// The background color of the [WebView].
-  ///
-  /// Default to [ColorScheme.background].
-  final Color? backgroundColor;
 
   @override
   State<FullscreenYoutubePlayer> createState() {
@@ -76,7 +70,6 @@ class FullscreenYoutubePlayer extends StatefulWidget {
             startSeconds: startSeconds,
             endSeconds: endSeconds,
             gestureRecognizers: gestureRecognizers,
-            backgroundColor: backgroundColor,
           );
         },
       ),
@@ -119,7 +112,6 @@ class _FullscreenYoutubePlayerState extends State<FullscreenYoutubePlayer> {
       child: YoutubePlayer(
         controller: _controller,
         aspectRatio: MediaQuery.of(context).size.aspectRatio,
-        backgroundColor: widget.backgroundColor,
         gestureRecognizers: widget.gestureRecognizers,
       ),
     );
