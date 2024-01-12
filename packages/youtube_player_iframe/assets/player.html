@@ -121,9 +121,6 @@
          message[key] = data
          var messageString = JSON.stringify(message);
 
-         console.log("Message String:");
-         console.log(messageString);
-
          switch(platform) {
            case 'android':
              YoutubePlayer.postMessage(messageString);
